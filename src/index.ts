@@ -8,68 +8,57 @@ configDotenv();
 
 const app: Application = express();
 
-const port = 8000;
-
 app.use(cors());
 app.use(express.json());
 
-//CREATE - POST:
+app.get("/discover", async (req: Request, res: Response) => {
+  res.status(200).send(req.body);
+});
 
-app.post("/discover", async (req: Request, res: Response) => {
+//Tuesday
+
+//1.CREATE API - POST req
+
+app.post("/create", async (req: Request, res: Response) => {
+  res.status(200).send(req.body);
+});
+
+//2. UPDATE API - PUT req
+
+app.put("/update", async (req: Request, res: Response) => {
+  const newUser = req.body;
+
   const user = {
-    name: "test",
-    email: "test@example.com",
-    password: "123456",
+    name: "bibi",
+    locker: "303",
+    password: "223344",
   };
-  res.send(user);
+
+  const updatedUser = {
+    ...user,
+    ...newUser,
+  };
+  res
+    .status(200)
+    .send({ message: "User updated successfully", data: updatedUser });
 });
 
-// //UPDATE - PUT:
+//3. DELETE API - DELETE req
 
-// app.put("/update", async (req: Request, res: Response) => {
-//   const newUser = req.body;
+app.delete("/delete", async (req: Request, res: Response) => {
+  const user = [
+    {
+      name: "bibi",
+      locker: "303",
+      password: "223344",
+    },
+    {
+      name: "gigi",
+      locker: "201",
+      password: "556677",
+    },
+  ];
 
-//   const user = {
-//     name: "test",
-//     email: "test@example.com",
-//     password: "123456",
-//   };
-
-//   const updatedUser = {
-//     ...user,
-//     ...newUser,
-//   };
-
-//   res
-//     .status(200)
-//     .send({ message: "User updated successfully", data: updatedUser });
-// });
-
-// //DELETE:
-
-// app.delete("/delete", async (req: Request, res: Response) => {
-//   res.status(200).send({ message: "User deleted succesfully" });
-// });
-
-// //LIST - GET:
-
-// app.get("/get-users", async (req: Request, res: Response) => {});
-
-//
-
-app.post("/create-user", async (req: Request, res: Response) => {
-  const { name, email } = req.body;
-
-  const user = await Usermodel.create({ name, email });
-  res.status(200).send({ message: "user created succesfully", data: user });
+  res.status(200).send({ message: "user deleted successfully", user: user });
 });
-
-app.get("/get-users", async (req: Request, res: Response) => {
-  const users = await Usermodel.find();
-  res.status(200).send({ message: "user fetched succeesfully", data: users });
-});
-
-app.listen(8000, async () => {
-  await connectToMongoDb();
-  console.log("http://localhost:8000");
-});
+app.listen(8000, () => console.log("http://localhost:8000"));
